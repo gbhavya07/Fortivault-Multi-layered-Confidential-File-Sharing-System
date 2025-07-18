@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Futuristic Crypto Security Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1b1f3a 0%, #38b6ff 100%);
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        /* Rain canvas covers everything */
+        #rain-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+            background: transparent;
+        }
+        /* Center everything */
+        .center-container {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            flex-direction: column;
+        }
+        /* Hide the checkbox */
+        #lock-toggle {
+            display: none;
+        }
+        /* Lock styles */
+        .lock {
+            margin-bottom: 0;
+            width: 160px;
+            height: 200px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: floatLock 3s ease-in-out infinite;
+            transition: box-shadow 0.3s, transform 0.3s;
+            z-index: 2;
+        }
+        @keyframes floatLock {
+            0% { transform: translateY(0px);}
+            50% { transform: translateY(-18px);}
+            100% { transform: translateY(0px);}
+        }
+        .lock-fx {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, #a259ff33 0%, transparent 80%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            animation: glowPulse 2.5s infinite alternate;
+        }
+        @keyframes glowPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 0.3; }
+        }
+        .futuristic-lock {
+            display: block;
+            filter: drop-shadow(0 0 18px #a259ffaa);
+            width: 160px;
+            height: 200px;
+        }
+        .glow-ring {
+            fill: none;
+            stroke: url(#ring-gradient);
+            stroke-width: 6;
+            opacity: 0.7;
+            stroke-dasharray: 240;
+            stroke-dashoffset: 0;
+            animation: ring-rotate 2.5s linear infinite;
+            filter: drop-shadow(0 0 18px #a259ffaa);
+        }
+        @keyframes ring-rotate {
+            to { stroke-dashoffset: 240; }
+        }
+        .shackle {
+            fill: none;
+            stroke: url(#shackle-gradient);
+            stroke-width: 10;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 10px #a259ffaa);
+        }
+        .body {
+            fill: url(#body-gradient);
+            stroke: #a259ff;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 16px #a259ffaa);
+        }
+        .keyhole {
+            fill: #fff;
+            stroke: #a259ff;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px #a259ff99);
+        }
+        .keyhole-dot {
+            fill: #6a3dff;
+            filter: drop-shadow(0 0 6px #6a3dffcc);
+        }
+        .accent1, .accent2 {
+            stroke: #a259ff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            opacity: 0.45;
+        }
+        /* Hide lock when form is open */
+        #lock-toggle:checked ~ .center-container label.lock {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.96) translateY(20px);
+            transition: all 0.4s cubic-bezier(.4,2,.6,1);
+        }
+        /* Login form */
+        .login-form {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px) scale(0.98);
+            transition: all 0.4s cubic-bezier(.4,2,.6,1);
+            background: rgba(34, 40, 60, 0.96);
+            padding: 2rem 2.5rem;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px #0006;
+            width: 320px;
+            max-width: 90vw;
+            position: relative;
+            z-index: 3;
+        }
+        #lock-toggle:checked ~ .center-container .login-form {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+        .login-form h2 {
+            color: #a259ff;
+            margin: 0 0 1.2rem 0;
+            text-align: center;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.7rem 0;
+            border: none;
+            border-radius: 8px;
+            background: #23284e;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 8px #0002;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #a259ff 0%, #6a3dff 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            box-shadow: 0 2px 8px #0002;
+            transition: background 0.2s;
+        }
+        .login-form button:hover {
+            background: linear-gradient(90deg, #6a3dff 0%, #a259ff 100%);
+        }
+        .login-form .close-form {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 1.5rem;
+            color: #a259ff;
+            cursor: pointer;
+            background: none;
+            border: none;
+            outline: none;
+            transition: color 0.2s;
+        }
+        .login-form .close-form:hover {
+            color: #6a3dff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix rain background -->
+    <canvas id="rain-canvas"></canvas>
+
+    <!-- Hidden checkbox for toggling form -->
+    <input type="checkbox" id="lock-toggle">
+    <div class="center-container">
+        <!-- Futuristic lock -->
+        <label for="lock-toggle" class="lock" title="Unlock to login" onclick="window.location.href='/login';">
+            <div class="lock-fx"></div>
+            <svg viewBox="0 0 80 110" class="futuristic-lock">
+                <defs>
+                    <linearGradient id="ring-gradient" x1="0" y1="0" x2="80" y2="110" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a259ff"/>
+                        <stop offset="80%" stop-color="#6a3dff"/>
+                        <stop offset="100%" stop-color="#a259ff"/>
+                    </linearGradient>
+                    <linearGradient id="shackle-gradient" x1="20" y1="25" x2="60" y2="25" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a259ff"/>
+                        <stop offset="100%" stop-color="#6a3dff"/>
+                    </linearGradient>
+                    <linearGradient id="body-gradient" x1="15" y1="50" x2="65" y2="100" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#2e2a5a"/>
+                        <stop offset="60%" stop-color="#6a3dff"/>
+                        <stop offset="100%" stop-color="#a259ff"/>
+                    </linearGradient>
+                </defs>
+                <!-- Animated glowing ring -->
+                <circle class="glow-ring" cx="40" cy="65" r="38" />
+                <!-- Lock shackle with gradient -->
+                <path class="shackle" d="M22 50 Q40 8 58 50" />
+                <!-- Lock body with gradient -->
+                <rect class="body" x="16" y="50" width="48" height="48" rx="15" />
+                <!-- Keyhole -->
+                <ellipse class="keyhole" cx="40" cy="80" rx="6" ry="13" />
+                <circle class="keyhole-dot" cx="40" cy="71" r="5" />
+                <!-- Futuristic accent lines -->
+                <line class="accent1" x1="25" y1="62" x2="55" y2="62" />
+                <line class="accent2" x1="25" y1="96" x2="55" y2="96" />
+            </svg>
+        </label>
+        <!-- Login form -->
+        
+    </div>
+    <script>
+        // Matrix rain background
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = ['0', '1'];
+        const colors = [
+            '#38b6ff', // blue
+            '#a259ff', // purple
+            '#2dfc7f'  // green
+        ];
+        const fontSize = 22;
+        let columns = Math.floor(window.innerWidth / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(27,17,58,0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 8;
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                ctx.shadowBlur = 0;
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 40);
+        window.addEventListener('resize', () => {
+            columns = Math.floor(window.innerWidth / fontSize);
+            drops = Array(columns).fill(1);
+        });
+    </script>
+</body>
+</html>

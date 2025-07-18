@@ -1,0 +1,63 @@
+<!-- templates/header.html -->
+<div class="navbar" style="height: 60px; padding-top: 5px;">
+    <!-- Logo (left side) -->
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo" style="width: 60px; height: 50px;">
+        <h1 class="website-name">Fortivault</h1>
+    </div>
+</div>
+
+<style>
+    /* Include Google Font - Poppins */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
+
+    /* Basic styling for the top bar */
+    .navbar {
+        background-color: #540688;  /* Dark background color */
+        padding: 10px 20px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo {
+        width: 40px;  /* Size of the logo */
+        height: 40px;
+        border-radius: 50%;  /* Circular logo */
+        margin-right: 10px;
+    }
+
+    /* Apply Poppins font to the website name */
+    .website-name {
+        color: #fff;
+        font-size: 24px;
+        font-family: 'Poppins', sans-serif; /* Using the Poppins font */
+        font-weight: 600;  /* Making the font weight a bit bold */
+        letter-spacing: 1px; /* Optional: slight spacing between letters */
+    }
+
+    /* Add this CSS for the website name */
+    h1 {
+        margin-top: 10px;  /* Adjust this value to move it down */
+        font-size: 1.1rem;  /* Optional: make the font size a little smaller */
+        text-align: left;  /* Ensure left alignment */
+        color: #fff;
+        padding-left: 0px;  /* Adjust the left padding to align it better */
+    }
+
+    /* Adding some margin to the body so the content isn't covered by the fixed navbar */
+    body {
+        padding-top: 60px;  /* Adjust according to navbar height */
+    }
+</style>

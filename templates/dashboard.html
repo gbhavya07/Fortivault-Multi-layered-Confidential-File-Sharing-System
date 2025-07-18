@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fortivault Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Rajdhani:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1b1f3a 0%, #38b6ff 100%);
+            position: relative;
+            color: #fff;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            z-index: 1;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .main-content {
+            z-index: 2;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lock {
+            width: 160px;
+            height: 200px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: floatLock 3s ease-in-out infinite;
+            transition: box-shadow 0.3s, transform 0.3s;
+            margin-bottom: 30px;
+        }
+
+        @keyframes floatLock {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-18px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .lock-fx {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #a259ff33 0%, transparent 80%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+            animation: glowPulse 2.5s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 0.3; }
+        }
+
+        .futuristic-lock {
+            width: 160px;
+            height: 200px;
+            display: block;
+            filter: drop-shadow(0 0 18px #a259ffaa);
+        }
+
+        /* SVG lock styles */
+        .glow-ring {
+            fill: none;
+            stroke: url(#ring-gradient);
+            stroke-width: 2;
+            stroke-dasharray: 12 8;
+            animation: ringRotate 4s linear infinite;
+        }
+
+        @keyframes ringRotate {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -100; }
+        }
+
+        .shackle {
+            fill: none;
+            stroke: url(#shackle-gradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+        }
+
+        .body {
+            fill: url(#body-gradient);
+        }
+
+        .keyhole {
+            fill: #1a1535;
+        }
+
+        .keyhole-dot {
+            fill: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            padding: 10px 30px;
+            width: 280px;
+            border-radius: 8px;
+        }
+
+        .btn + .btn {
+            margin-top: 15px;
+        }
+        
+        .body {
+            fill: url(#body-gradient);
+            stroke: #a259ff;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 16px #a259ffaa);
+        }
+
+        .keyhole {
+            fill: #fff;
+            stroke: #a259ff;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px #a259ff99);
+        }
+
+        .keyhole-dot {
+            fill: #6a3dff;
+            filter: drop-shadow(0 0 6px #6a3dffcc);
+        }
+
+        .accent1, .accent2 {
+            stroke: #a259ff;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            opacity: 0.45;
+        }
+
+        /* Main Content */
+        .main-content {
+            text-align: center;
+            padding-top: 12vh;
+            color: #fff;
+            font-family: 'Orbitron', 'Segoe UI', sans-serif;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 8px #a137e7;
+            margin-bottom: 40px;
+        }
+
+        .custom-btn {
+            font-size: 1.1rem;
+            padding: 14px 28px;
+            border-radius: 12px;
+            margin: 10px;
+            width: 300px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            border: none;
+        }
+
+        .btn-upload {
+            background-color: #542787;
+            color: #fff;
+        }
+
+        .btn-upload:hover {
+            box-shadow: 0 0 20px #c36cdb;
+        }
+
+        .btn-view {
+            background-color: #391464;
+            color: #fff;
+        }
+
+        .btn-view:hover {
+            box-shadow: 0 0 20px #198754;
+        }
+
+        .btn-logout {
+            background-color: #230940;
+            color: #fff;
+        }
+
+        .btn-logout:hover {
+            box-shadow: 0 0 20px #dc3545;
+        }
+
+    </style>
+</head>
+<body>
+    <canvas id="rain-canvas"></canvas>
+    <div class="overlay"></div>
+
+    <div class="main-content">
+        <!-- Lock Animation -->
+        <div class="lock">
+            <div class="lock-fx"></div>
+            <svg viewBox="0 0 80 110" class="futuristic-lock">
+                <defs>
+                    <linearGradient id="ring-gradient" x1="0" y1="0" x2="80" y2="110" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a259ff"/>
+                        <stop offset="80%" stop-color="#6a3dff"/>
+                        <stop offset="100%" stop-color="#a259ff"/>
+                    </linearGradient>
+                    <linearGradient id="shackle-gradient" x1="20" y1="25" x2="60" y2="25" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#a259ff"/>
+                        <stop offset="100%" stop-color="#6a3dff"/>
+                    </linearGradient>
+                    <linearGradient id="body-gradient" x1="15" y1="50" x2="65" y2="100" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stop-color="#2e2a5a"/>
+                        <stop offset="60%" stop-color="#6a3dff"/>
+                        <stop offset="100%" stop-color="#a259ff"/>
+                    </linearGradient>
+                </defs>
+                <circle class="glow-ring" cx="40" cy="65" r="38" />
+                <path class="shackle" d="M22 50 Q40 8 58 50" />
+                <rect class="body" x="16" y="50" width="48" height="48" rx="15" />
+                <ellipse class="keyhole" cx="40" cy="80" rx="6" ry="13" />
+                <circle class="keyhole-dot" cx="40" cy="71" r="5" />
+            </svg>
+        </div>
+
+        <!-- Welcome Text -->
+        <h1>Welcome to Fortivault</h1>
+        <a href="/upload"><button class="custom-btn btn-upload">🔒 Upload Secure Message/File</button></a>
+        <a href="/my_files"><button class="custom-btn btn-view">📁 View My Uploaded Files</button></a>
+        <a href="/logout"><button class="custom-btn btn-logout">🚪 Logout</button></a>
+
+    </div>
+
+    <script>
+        const canvas = document.getElementById('rain-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const chars = ['0', '1'];
+        const colors = ['#38b6ff', '#a259ff', '#2dfc7f'];
+        const fontSize = 22;
+        let columns = Math.floor(window.innerWidth / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function draw() {
+            ctx.fillStyle = 'rgba(27,17,58,0.18)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                ctx.fillStyle = color;
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 8;
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                ctx.shadowBlur = 0;
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 40);
+        window.addEventListener('resize', () => {
+            columns = Math.floor(window.innerWidth / fontSize);
+            drops = Array(columns).fill(1);
+        });
+    </script>
+</body>
+</html>

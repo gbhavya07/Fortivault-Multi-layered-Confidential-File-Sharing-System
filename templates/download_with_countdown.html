@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure File Access - Fortivault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f0c29, #370459, #24243e);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+    }
+    
+
+    .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    padding: 60px 40px;
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+    }
+
+
+    .glass-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      color: #e9eced;
+      text-shadow: 0 0 10px #a137e7;
+      margin-bottom: 25px;
+    }
+
+    .info-text {
+      font-size: 1.3rem;
+      margin: 12px 0;
+      color: #d2e3f5;
+    }
+
+    #timer {
+      color: #ffe066;
+      font-weight: bold;
+      text-shadow: 0 0 10px #ffe066;
+    }
+
+    .btn-download {
+      background-color: #0a053b;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 12px 20px;
+      margin-top: 25px;
+      width: 100%;
+    }
+
+    .btn-download:hover {
+      background-color: #269812;
+    }
+
+    .btn-back {
+      margin-top: 15px;
+      width: 100%;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.15);
+      color: #fff;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+    }
+
+    .btn-back:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+{% include 'header.html' %}
+  <div class="glass-card">
+    <h2>🔐 Secure File Access</h2>
+    <p class="info-text">⏳ Self-destructs in: <span id="timer"></span></p>
+    <p class="info-text">📊 Accessed: {{ read_count }} / {{ read_limit }}</p>
+    {% if read_count == read_limit %}
+      <p class="text-warning"><strong>⚠️ This was your final allowed access!</strong></p>
+    {% endif %}
+
+    <a href="/download/{{ secure_id }}" class="btn btn-download" download>⬇ Click here to Download</a>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-back">← Back to Dashboard</a>
+  </div>
+
+  <script>
+    var seconds = {{ seconds_remaining }};
+    function countdown() {
+      var minutes = Math.floor(seconds / 60);
+      var seconds_left = seconds % 60;
+      document.getElementById('timer').innerHTML = minutes + "m " + seconds_left + "s";
+      if (seconds > 0) {
+        seconds--;
+        setTimeout(countdown, 1000);
+      } else {
+        document.getElementById('timer').innerHTML = "⛔ Destroyed";
+        alert("⚠️ This file/message has self-destructed!");
+      }
+    }
+    window.onload = countdown;
+  </script>
+
+</body>
+</html>

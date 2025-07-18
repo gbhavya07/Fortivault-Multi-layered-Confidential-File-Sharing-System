@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Secure File View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .secure-content {
+            border: 2px solid #ccc;
+            padding: 20px;
+            background: #f9f9f9;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Secure Message</h2>
+
+<div class="secure-content">
+    {{ message }}
+</div>
+
+<br>
+<p><strong>Access Info:</strong> {{ read_count }} out of {{ read_limit }} allowed reads used.</p>
+<p><strong>Session Time Remaining:</strong> {{ seconds_remaining }} seconds</p>
+
+</body>
+</html>

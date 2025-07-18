@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Fortivault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(to right, #f9f9fb 50%, #ded9f6 50%);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+        }
+        .left-panel {
+            width: 50%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .right-panel {
+            width: 50%;
+            background: url("{{ url_for('static', filename='login.jpg') }}") center/cover no-repeat;
+            position: relative;
+        }
+        .logo {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #44318D;
+            margin-bottom: 30px;
+        }
+        .form-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .form-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .btn-register {
+            background-color: #44318D;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-weight: 600;
+        }
+        .btn-register:hover {
+            background-color: #372e7e;
+        }
+        .switch-link {
+            font-size: 1.2rem;
+            margin-top: 15px;
+        }
+        .alert {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="left-panel">
+        <div class="logo">🔐 Fortivault</div>
+        <div class="form-title">Create Account</div>
+        <div class="form-subtitle">Start protecting your private files and messages</div>
+
+        {% if error %}
+        <div class="alert alert-danger text-center">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Email address</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+  <label class="form-label">Password</label>
+  <input type="password" name="password" class="form-control" required
+         pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}"
+         title="Must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, 1 special character, and be at least 8 characters long.">
+  <small class="text-muted">
+    Must contain 1 uppercase, 1 lowercase, 1 number, 1 special character, min 8 characters.
+  </small>
+</div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-register">Register</button>
+            </div>
+        </form>
+        <div class="switch-link">
+            Already have an account? <a href="/login" class="text-decoration-none">Login here</a>
+        </div>
+    </div>
+    <div class="right-panel"></div>
+</body>
+</html>

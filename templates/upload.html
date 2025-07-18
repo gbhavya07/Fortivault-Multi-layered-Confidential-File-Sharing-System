@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Secure File - Fortivault</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Outfit', sans-serif;
+            overflow-y: auto;
+            background-color: #370459;
+        }
+        
+
+
+        #background-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -2;
+            object-fit: cover;
+            object-position: 100% center;
+        }
+
+    
+
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 30, 0.75);
+            z-index: 0;
+        }
+
+        .upload-form-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            
+        }
+
+        .upload-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            color: white;
+        }
+
+        .upload-card h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            background-color: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+        }
+
+        .form-control::placeholder {
+            color: #ccc;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(105, 78, 240, 0.25);
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #6f42c1;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: #5936a2;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid #999;
+            border-radius: 8px;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+
+
+    <!-- 🔒 Video Background -->
+    <video autoplay muted loop id="background-video">
+        <source src="{{ url_for('static', filename='vault_bg.mp4') }}" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
+      
+    
+      <div class="overlay"></div>
+      
+
+    <!-- 📤 Upload Form -->
+    <div class="upload-form-container">
+        <div class="upload-card">
+            <h2>Upload Secure File</h2>
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="file" class="form-label">Select File</label>
+                    <input type="file" class="form-control" id="file" name="file" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="expiry_hours" class="form-label">Expiry Time (in hours)</label>
+                    <input type="number" class="form-control" id="expiry_hours" name="expiry_hours" placeholder="e.g. 24">
+                </div>
+
+                <div class="mb-3">
+                    <label for="expiry_datetime" class="form-label">Or Exact Expiry Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="expiry_datetime" name="expiry_datetime">
+                </div>
+
+                <div class="mb-3">
+                    <label for="read_limit" class="form-label">Maximum Read Limit</label>
+                    <input type="number" class="form-control" id="read_limit" name="read_limit" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="allowed_users" class="form-label">Allowed Emails (comma-separated)</label>
+                    <input type="text" name="allowed_users" class="form-control" placeholder="e.g. user1@gmail.com, user2@yahoo.com">
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password (optional)</label>
+                    <input type="password" class="form-control" name="password" placeholder="Protect file with a password">
+                </div>
+
+                <div class="d-grid mb-2">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+
+                <div class="text-center">
+                    <a href="/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 🧠 JS to manage mutually exclusive expiry fields -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const expiryHoursInput = document.getElementById('expiry_hours');
+            const expiryDatetimeInput = document.getElementById('expiry_datetime');
+
+            expiryHoursInput.addEventListener('input', function () {
+                expiryDatetimeInput.disabled = this.value.trim() !== '';
+            });
+
+            expiryDatetimeInput.addEventListener('input', function () {
+                expiryHoursInput.disabled = this.value.trim() !== '';
+            });
+        });
+    </script>
+
+</body>
+</html>

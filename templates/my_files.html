@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Uploaded Files - Fortivault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+    background: linear-gradient(to right, #0f0c29, #370459, #24243e);
+    font-family: 'Poppins', sans-serif;
+    color: #fff;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+    h2 {
+    text-align: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #bbbfc1;  /* 🟦 Darker Neon Blue */
+    text-shadow: 0 0 6px #a137e7;
+    animation: glow-fade 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow-fade {
+    from { text-shadow: 0 0 4px#a137e7; }
+    to   { text-shadow: 0 0 10px #a137e7; }
+  }
+
+    .table-container {
+      background-color: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .table thead th {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #efedf0;  /* 🟦 Matching neon */
+    text-align: center;
+    }
+
+    .table tbody tr {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .table td, .table th {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 6px 12px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+    }
+
+    .btn-info {
+      background-color: #17a2b8;
+      border: none;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border: none;
+    }
+
+    .btn-secondary {
+      background-color: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid #aaa;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255,255,255,0.3);
+    }
+
+    .badge {
+      font-size: 0.85rem;
+      padding: 6px 10px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .no-files {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 50px;
+      color: #ccc;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+
+  <h2>My Uploaded Files</h2>
+
+  {% if contents %}
+  <div class="container table-container mt-4">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-white">
+        <thead>
+          <tr>
+            <th>SNO</th>
+            <th>Filename</th>
+            <th>Expiry</th>
+            <th>Read Count</th>
+            <th>Read Limit</th>
+            <th>Access Logs</th>
+            <th>Status</th>
+            <th>Secure Link</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for content in contents %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ content.filename.split('_', 1)[1] }}</td>
+            <td>{{ content.expiry_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ content.read_count }}</td>
+            <td>{{ content.read_limit }}</td>
+            <td>{{ content.access_logs | length if content.access_logs else 0 }}</td>
+            <td>
+              {% if content.expiry_time < now or content.read_count >= content.read_limit %}
+              <span class="badge bg-danger">Expired</span>
+              {% else %}
+              <span class="badge bg-success">Active</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{{ url_for('access_content', secure_id=content.secure_id) }}" target="_blank" class="btn btn-sm btn-primary">Open</a>
+            </td>
+            <td class="action-buttons">
+              <a href="{{ url_for('view_access_logs', file_id=content.id) }}" class="btn btn-sm btn-info">Logs</a>
+              <form action="{{ url_for('delete_my_file', content_id=content.id) }}" method="POST" onsubmit="return confirm('Delete this file?');">
+                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="no-files">You have not uploaded any files yet.</div>
+  {% endif %}
+
+  <div class="text-center mt-5">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">← Back to Dashboard</a>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Access Logs - Fortivault</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(to right, #0f0c29, #370459, #24243e);
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: #bbbfc1;
+      text-shadow: 0 0 6px #a137e7;
+      animation: glow-fade 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow-fade {
+    from { text-shadow: 0 0 4px#a137e7; }
+    to   { text-shadow: 0 0 10px #a137e7; }
+  }
+
+    .table-container {
+      background-color: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .table thead th {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #e2e0e4;
+      text-align: center;
+    }
+
+    .table tbody tr {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .table td, .table th {
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 6px 12px;
+    }
+
+    .btn-secondary {
+      background-color: rgba(255,255,255,0.15);
+      color: #fff;
+      border: 1px solid #aaa;
+    }
+
+    .btn-secondary:hover {
+      background-color: rgba(255,255,255,0.3);
+    }
+
+    .no-logs {
+      text-align: center;
+      font-size: 1.2rem;
+      margin-top: 50px;
+      color: #ccc;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #555;
+      border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+      background: #777;
+    }
+  </style>
+</head>
+<body>
+{% include 'header.html' %}
+
+  <h2>Access Logs for {{ filename.split('_', 1)[1] }}</h2>
+
+  {% if logs %}
+  <div class="container table-container mt-4">
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-white">
+        <thead>
+          <tr>
+            <th>SNO</th>
+            <th>Email</th>
+            <th>IP Address</th>
+            <th>Access Time</th>
+            <th>Outcome</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in logs %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ log.user.email }}</td>
+            <td>{{ log.ip_address }}</td>
+            <td>{{ log.access_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+              {% if log.access_outcome == "Success" %}
+                ✅ Success
+              {% elif log.access_outcome == "Wrong Password" %}
+                ❌ Wrong Password
+              {% elif log.access_outcome == "Wrong OTP" %}
+                🔐 Wrong OTP
+              {% elif log.access_outcome == "Expired OTP" %}
+                ⏱️ Expired OTP
+              {% else %}
+                ✅ Success
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+    <div class="no-logs">No accesses recorded yet.</div>
+  {% endif %}
+
+  <div class="text-center mt-5">
+    <a href="{{ url_for('my_files') }}" class="btn btn-secondary">← Back to My Files</a>
+  </div>
+
+</body>
+</html>
